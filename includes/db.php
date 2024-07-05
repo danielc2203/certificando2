@@ -1,6 +1,12 @@
 <?php
 require_once 'config.php';
 
+function conectarBaseDatos() {
+    global $mysqli;
+    return $mysqli;
+}
+
+// Funciones de registro (puedes mantenerlas aquí si las necesitas)
 function registerUser($username, $password, $email, $role) {
     global $mysqli;
     $sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)";
@@ -28,6 +34,4 @@ function registerCandidate($company_id, $name, $email, $username, $password) {
         $stmt->close();
     }
 }
-
-// Other database functions...
 ?>
