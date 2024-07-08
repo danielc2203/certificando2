@@ -1,0 +1,12 @@
+[2024-07-08 17:15:11] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:15:11] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = :email LIMIT 1
+[2024-07-08 17:16:53] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:16:53] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = ? LIMIT 1
+[2024-07-08 17:31:14] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:31:14] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = ? LIMIT 1
+[2024-07-08 17:32:44] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:32:44] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = ? LIMIT 1
+[2024-07-08 17:33:20] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:33:20] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = ? LIMIT 1
+[2024-07-08 17:36:08] Datos recibidos: email=empresa@empresa.com, userType=company
+[2024-07-08 17:36:08] Consulta SQL ejecutada: SELECT id, password FROM empresas WHERE email = ? LIMIT 1

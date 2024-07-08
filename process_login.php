@@ -2,53 +2,63 @@
 require_once 'includes/db.php';
 include 'includes/init.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['userType'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $userType = $_POST['userType'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Leer el cuerpo de la solicitud y decodificar JSON
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    // Registro de los datos recibidos
-    log_message("Datos recibidos: email=$email, userType=$userType");
+    if (isset($data['email']) && isset($data['password']) && isset($data['userType'])) {
+        $email = $data['email'];
+        $password = $data['password'];
+        $userType = $data['userType'];
 
-    $conexion = conectarBaseDatos();
+        // Registro de los datos recibidos
+        error_log("Datos recibidos: email=$email, userType=$userType");
 
-    try {
-        if ($userType === 'company') {
-            $sql = "SELECT id, password FROM empresas WHERE email = :email LIMIT 1";
-        } elseif ($userType === 'employee') {
-            $sql = "SELECT id, password FROM empleados WHERE email = :email LIMIT 1";
-        } else {
-            echo json_encode(['error' => 'Tipo de usuario no válido']);
-            exit;
-        }
+        $conexion = conectarBaseDatos();
 
-        // Registro de la consulta SQL ejecutada
-        log_message("Consulta SQL ejecutada: $sql");
-
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($usuario && password_verify($password, $usuario['password'])) {
-            session_start();
-            $_SESSION['user_id'] = $usuario['id'];
-            $_SESSION['user_type'] = $userType;
-
+        try {
             if ($userType === 'company') {
-                echo json_encode(['redirect' => 'dashboard_company.php']);
+                $sql = "SELECT id, password FROM empresas WHERE email = ?";
             } elseif ($userType === 'employee') {
-                echo json_encode(['redirect' => 'dashboard_employee.php']);
+                $sql = "SELECT id, password FROM empleados WHERE email = ?";
+            } else {
+                echo json_encode(['error' => 'Tipo de usuario no válido']);
+                exit;
             }
-        } else {
-            echo json_encode(['error' => 'Usuario o contraseña incorrectos']);
+
+            // Registro de la consulta SQL ejecutada
+            error_log("Consulta SQL ejecutada: $sql");
+
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param('s', $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $usuario = $result->fetch_assoc();
+
+            if ($usuario && password_verify($password, $usuario['password'])) {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['user_id'] = $usuario['id'];
+                $_SESSION['user_type'] = $userType;
+
+                if ($userType === 'company') {
+                    echo json_encode(['redirect' => 'dashboard_company.php']);
+                } elseif ($userType === 'employee') {
+                    echo json_encode(['redirect' => 'dashboard_employee.php']);
+                }
+            } else {
+                echo json_encode(['error' => 'Usuario o contraseña incorrectos']);
+            }
+        } catch (mysqli_sql_exception $e) {
+            // Registro del error de la consulta
+            error_log("Error en la consulta: " . $e->getMessage());
+            echo json_encode(['error' => 'Error en la consulta: ' . $e->getMessage()]);
         }
-    } catch (PDOException $e) {
-        // Registro del error de la consulta
-        log_message("Error en la consulta: " . $e->getMessage());
-        echo json_encode(['error' => 'Error en la consulta: ' . $e->getMessage()]);
+    } else {
+        echo json_encode(['error' => 'Datos incompletos']);
     }
 } else {
-    echo json_encode(['error' => 'Datos incompletos']);
+    echo json_encode(['error' => 'Método no permitido']);
 }
 ?>
