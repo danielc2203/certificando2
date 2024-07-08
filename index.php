@@ -59,9 +59,82 @@ include 'includes/init.php'; // Incluye cualquier archivo de inicialización si 
 </body>
 </html>
 
-
-
 <script>
+        // SweetAlert2 para mostrar formulario de inicio de sesión
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginLink').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Iniciar Sesión',
+                    html:
+                        '<form id="loginForm">' +
+                        '<input type="email" id="email" class="swal2-input" placeholder="Correo Electrónico" required>' +
+                        '<input type="password" id="password" class="swal2-input" placeholder="Contraseña" required>' +
+                        '<select id="userType" class="swal2-select" required>' +
+                        '<option value="" disabled selected>Seleccionar tipo de usuario</option>' +
+                        '<option value="company">Empresa</option>' +
+                        '<option value="employee">Empleado</option>' +
+                        '</select>' +
+                        '</form>',
+                    showCancelButton: true,
+                    confirmButtonText: 'Iniciar Sesión',
+                    cancelButtonText: 'Cancelar',
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                        const email = document.getElementById('email').value.trim();
+                        const password = document.getElementById('password').value.trim();
+                        const userType = document.getElementById('userType').value;
+
+                        if (!email || !password || !userType) {
+                            Swal.showValidationMessage('Todos los campos son obligatorios');
+                            return false;
+                        }
+
+                        return { email: email, password: password, userType: userType };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Envía el formulario con AJAX
+                        const formData = result.value;
+                        submitLogin(formData);
+                    }
+                });
+            });
+        });
+
+        // Función para enviar el formulario de inicio de sesión
+        function submitLogin(formData) {
+            console.log('Datos enviados al servidor D1:', formData); // Registrar datos enviados
+
+            fetch('process_login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response from server:', data); // Imprimir la respuesta del servidor en la consola
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if (data.error) {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error al iniciar sesión:', error);
+                Swal.fire('Error', 'Hubo un problema al iniciar sesión.', 'error');
+            });
+        }
+    </script>
+
+<!-- <script>
     // SweetAlert2 para mostrar formulario de inicio de sesión
     document.getElementById('loginLink').addEventListener('click', function() {
         Swal.fire({
@@ -135,4 +208,4 @@ include 'includes/init.php'; // Incluye cualquier archivo de inicialización si 
             Swal.fire('Error', 'Hubo un problema al iniciar sesión.', 'error');
         });
     }
-</script>
+</script> -->
