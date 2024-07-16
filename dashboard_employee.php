@@ -28,7 +28,7 @@ include 'templates/header.php';
                             <h2 class="display-3 fw-bolder mb-3"><span class="text-gradient d-inline"></span>manipulación de alimentos</h2>
                             <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
                                 <button class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" onclick="openVideoModal()">Ver Curso</button>
-                                <a class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" href="exam.html">Realizar exámen</a>
+                                <button class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" id="btnRealizarExamen">Realizar Examen</button>
                             </div>
                         </div>
                     </div>
@@ -87,6 +87,113 @@ include 'templates/header.php';
             };
         }
     </script>
+
+    <!-- script para la funcion de examen -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Función para mostrar el formulario de preguntas
+        $('#btnRealizarExamen').click(function() {
+            mostrarFormularioPreguntas();
+        });
+
+        function mostrarFormularioPreguntas() {
+            Swal.fire({
+                title: 'Examen de Curso',
+                html:
+                '<form id="examenForm">' +
+                    '<div class="mb-3">' +
+                        '<label for="pregunta1" class="form-label">¿Cuál es la capital de Francia?</label>' +
+                        '<select id="pregunta1" class="form-select" required>' +
+                            '<option value="">Selecciona una respuesta</option>' +
+                            '<option value="paris">París</option>' +
+                            '<option value="roma">Roma</option>' +
+                            '<option value="madrid">Madrid</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                        '<label for="pregunta2" class="form-label">¿Cuál es el resultado de 2 + 2?</label>' +
+                        '<select id="pregunta2" class="form-select" required>' +
+                            '<option value="">Selecciona una respuesta</option>' +
+                            '<option value="3">3</option>' +
+                            '<option value="4">4</option>' +
+                            '<option value="5">5</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                        '<label for="pregunta3" class="form-label">¿Cuál es el océano más grande del mundo?</label>' +
+                        '<select id="pregunta3" class="form-select" required>' +
+                            '<option value="">Selecciona una respuesta</option>' +
+                            '<option value="atlantico">Océano Atlántico</option>' +
+                            '<option value="indico">Océano Índico</option>' +
+                            '<option value="pacifico">Océano Pacífico</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                        '<label for="pregunta4" class="form-label">¿Quién escribió "Don Quijote de la Mancha"?</label>' +
+                        '<select id="pregunta4" class="form-select" required>' +
+                            '<option value="">Selecciona una respuesta</option>' +
+                            '<option value="cervantes">Miguel de Cervantes</option>' +
+                            '<option value="garcia">Gabriel García Márquez</option>' +
+                            '<option value="shakespeare">William Shakespeare</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                        '<label for="pregunta5" class="form-label">¿Cuál es la capital de Japón?</label>' +
+                        '<select id="pregunta5" class="form-select" required>' +
+                            '<option value="">Selecciona una respuesta</option>' +
+                            '<option value="tokio">Tokio</option>' +
+                            '<option value="beijing">Pekín</option>' +
+                            '<option value="seul">Seúl</option>' +
+                        '</select>' +
+                    '</div>' +
+                '</form>',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Enviar',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    const respuestas = {
+                        pregunta1: document.getElementById('pregunta1').value,
+                        pregunta2: document.getElementById('pregunta2').value,
+                        pregunta3: document.getElementById('pregunta3').value,
+                        pregunta4: document.getElementById('pregunta4').value,
+                        pregunta5: document.getElementById('pregunta5').value
+                    };
+                    return respuestas;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const respuestas = result.value;
+                    validarRespuestas(respuestas);
+                }
+            });
+        }
+
+        function validarRespuestas(respuestas) {
+            const respuestasCorrectas = {
+                pregunta1: 'paris',
+                pregunta2: '4',
+                pregunta3: 'pacifico',
+                pregunta4: 'cervantes',
+                pregunta5: 'tokio'
+            };
+
+            let todasCorrectas = true;
+            Object.keys(respuestas).forEach(pregunta => {
+                if (respuestas[pregunta] !== respuestasCorrectas[pregunta]) {
+                    todasCorrectas = false;
+                    Swal.fire('Respuesta Incorrecta', `La respuesta para la pregunta ${pregunta} no es correcta. Por favor, revisa nuevamente.`, 'error');
+                }
+            });
+
+            if (todasCorrectas) {
+                Swal.fire('¡Examen Aprobado!', 'Todas las respuestas son correctas.', 'success');
+            }
+        }
+    });
+</script>
+
+
 </body>
 </html>
 

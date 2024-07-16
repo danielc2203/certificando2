@@ -9,6 +9,8 @@ include 'templates/header.php';
 ?>
 
 <body>
+
+<div class="container">
     <h1>Empleados Registrados</h1>
 
     <!-- Tabla para listar empleados -->
@@ -24,12 +26,12 @@ include 'templates/header.php';
         <tbody>
         </tbody>
     </table>
-
-    <button type="button" class="btn btn-outline-primary" id="btnRegistrarUsuario">Registrar Nuevo Usuario</button>
-
-    <p>
+    <div class="d-flex justify-content-between w-100 m-3">
+        <button type="button" class="btn btn-outline-primary" id="btnRegistrarUsuario">Registrar Nuevo Usuario</button>
         <a href="logout.php" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger">Cerrar Sesión</a>
-    </p>
+    </div>
+</div>
+
 </body>
 </html>
 
@@ -46,6 +48,30 @@ include 'templates/footer.php';
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar DataTable
     $('#empleadosTable').DataTable({
+        language: {
+            "decimal": "",
+            "emptyTable": "No hay datos disponibles en la tabla",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Buscar:",
+            "zeroRecords": "No se encontraron registros coincidentes",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "aria": {
+                "sortAscending": ": activar para ordenar la columna ascendente",
+                "sortDescending": ": activar para ordenar la columna descendente"
+            }
+        },
         ajax: {
             url: 'get_empleados.php',
             dataSrc: ''
