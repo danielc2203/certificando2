@@ -29,14 +29,13 @@ include 'includes/init.php';
                             <a class="nav-link" href="dashboard.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="logout.php">Cerrar Sesión</a>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item">
                             <a class="nav-link" href="register.php">Registro</a>
                         </li>
+                        
+                    <?php else: ?>
+
                         <li class="nav-item">
-                            <a class="nav-link" href="login.php">Inicio de Sesión</a>
+                            <a class="nav-link" href="logout.php">Cerrar Sesión</a>
                         </li>
                     <?php endif; ?>
                 </ul>
